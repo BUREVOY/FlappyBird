@@ -56,11 +56,19 @@ except NameError:
     xrange = range
 
 
+class CommonData:
+    def __init__(self):
+        self.FPSCLOCK = pygame.time.Clock()
+        self.SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+
+
+data = CommonData()
+
+
 def main():
-    global SCREEN, FPSCLOCK
+
     pygame.init()
-    FPSCLOCK = pygame.time.Clock()
-    SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+
     pygame.display.set_caption('Flappy Bird')
 
     # наши циферки в массивчик переводим
@@ -192,14 +200,14 @@ def showStartAnimation():
         playerShm(playerShmVals)
 
         # рисуем спрайты
-        SCREEN.blit(NUMBERS['background'], (0, 0))
-        SCREEN.blit(NUMBERS['player'][playerIndex],
-                    (playerx, playery + playerShmVals['val']))
-        SCREEN.blit(NUMBERS['message'], (messagex, messagey))
-        SCREEN.blit(NUMBERS['base'], (basex, BASEY))
+        data.SCREEN.blit(NUMBERS['background'], (0, 0))
+        data.SCREEN.blit(NUMBERS['player'][playerIndex],
+                         (playerx, playery + playerShmVals['val']))
+        data.SCREEN.blit(NUMBERS['message'], (messagex, messagey))
+        data.SCREEN.blit(NUMBERS['base'], (basex, BASEY))
 
         pygame.display.update()
-        FPSCLOCK.tick(FPS)
+        data.FPSCLOCK.tick(FPS)
 
 
 def mainGame(movementInfo):
@@ -226,7 +234,7 @@ def mainGame(movementInfo):
         {'x': SCREENWIDTH + 200 + (SCREENWIDTH / 2), 'y': newPipe2[1]['y']},
     ]
 
-    dt = FPSCLOCK.tick(FPS)/1000
+    dt = data.FPSCLOCK.tick(FPS)/1000
     pipeVelX = -128 * dt
 
     playerVelY = -9   # pскорость при изменении у
@@ -309,13 +317,13 @@ def mainGame(movementInfo):
             upperPipes.pop(0)
             lowerPipes.pop(0)
 
-        SCREEN.blit(NUMBERS['background'], (0, 0))
+        data.SCREEN.blit(NUMBERS['background'], (0, 0))
 
         for uPipe, lPipe in zip(upperPipes, lowerPipes):
-            SCREEN.blit(NUMBERS['pipe'][0], (uPipe['x'], uPipe['y']))
-            SCREEN.blit(NUMBERS['pipe'][1], (lPipe['x'], lPipe['y']))
+            data.SCREEN.blit(NUMBERS['pipe'][0], (uPipe['x'], uPipe['y']))
+            data.SCREEN.blit(NUMBERS['pipe'][1], (lPipe['x'], lPipe['y']))
 
-        SCREEN.blit(NUMBERS['base'], (basex, BASEY))
+        data.SCREEN.blit(NUMBERS['base'], (basex, BASEY))
 
         showScore(score)
 
@@ -325,10 +333,10 @@ def mainGame(movementInfo):
 
         playerSurface = pygame.transform.rotate(
             NUMBERS['player'][playerIndex], visibleRot)
-        SCREEN.blit(playerSurface, (playerx, playery))
+        data.SCREEN.blit(playerSurface, (playerx, playery))
 
         pygame.display.update()
-        FPSCLOCK.tick(FPS)
+        data.FPSCLOCK.tick(FPS)
 
 
 def showGameOverScreen(crashInfo):
@@ -374,21 +382,21 @@ def showGameOverScreen(crashInfo):
                 playerRot -= playerVelRot
 
         # потрачено
-        SCREEN.blit(NUMBERS['background'], (0, 0))
+        data.SCREEN.blit(NUMBERS['background'], (0, 0))
 
         for uPipe, lPipe in zip(upperPipes, lowerPipes):
-            SCREEN.blit(NUMBERS['pipe'][0], (uPipe['x'], uPipe['y']))
-            SCREEN.blit(NUMBERS['pipe'][1], (lPipe['x'], lPipe['y']))
+            data.SCREEN.blit(NUMBERS['pipe'][0], (uPipe['x'], uPipe['y']))
+            data.SCREEN.blit(NUMBERS['pipe'][1], (lPipe['x'], lPipe['y']))
 
-        SCREEN.blit(NUMBERS['base'], (basex, BASEY))
+        data.SCREEN.blit(NUMBERS['base'], (basex, BASEY))
         showScore(score)
 
         playerSurface = pygame.transform.rotate(
             NUMBERS['player'][1], playerRot)
-        SCREEN.blit(playerSurface, (playerx, playery))
-        SCREEN.blit(NUMBERS['gameover'], (50, 180))
+        data.SCREEN.blit(playerSurface, (playerx, playery))
+        data.SCREEN.blit(NUMBERS['gameover'], (50, 180))
 
-        FPSCLOCK.tick(FPS)
+        data.FPSCLOCK.tick(FPS)
         pygame.display.update()
 
 
@@ -428,7 +436,8 @@ def showScore(score):
     Xoffset = (SCREENWIDTH - totalWidth) / 2
 
     for digit in scoreDigits:
-        SCREEN.blit(NUMBERS['numbers'][digit], (Xoffset, SCREENHEIGHT * 0.1))
+        data.SCREEN.blit(NUMBERS['numbers'][digit],
+                         (Xoffset, SCREENHEIGHT * 0.1))
         Xoffset += NUMBERS['numbers'][digit].get_width()
 
 
